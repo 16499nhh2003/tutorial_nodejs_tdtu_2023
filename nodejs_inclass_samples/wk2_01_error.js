@@ -8,7 +8,7 @@
 */
 
 var fs = require("fs");
-fs.readFile("./wrong_file.txt", function(err, data) {
+fs.readFile("./wrong_file.txt", function (err, data) {
 	if (err) {
 		console.error(err);
 		return;

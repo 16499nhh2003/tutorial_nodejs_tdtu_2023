@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <p>Bài tập tải ảnh động bằng Ajax</p>
+    <input type="text" id="url">
+    <input value="Tải ảnh by promise" type="button" class="btn btn-danger" onclick="loadImgWithPromise()">
+    <input value="Tải ảnh by async" type="button" class="btn btn-danger" onclick="loadImgWithAsyncCall()">
+    <div id="image">
+        <img src="" id="photo">
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        function loadImg(url) {
+            return new Promise(function (reslove, reject) {
+                let xhr = new XMLHttpRequest();
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 2) {
+                        if (xhr.status === 200) {
+                            xhr.responseType = "blob";
+                        } else {
+                            xhr.responseType = "text";
+                        }
+                    }
+                };
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var blob = new Blob([xhr.response], { type: "application/octetstream" });
+                        //Check the Browser type and download the File.
+                        var isIE = false || !!document.documentMode;
+                        if (isIE) {
+                            window.navigator.msSaveBlob(blob, fileName);
+                        } else {
+                            var imageUrl = window.URL || window.webkitURL;
+                            var imageLink = imageUrl.createObjectURL(blob);
+                            reslove(imageLink)
+                        }
+                    }
+                    else {
+                        reject(xhr.statusText)
+                    }
+                };
+                xhr.open("GET", url, true)
+                xhr.send()
+            })
+        }
+
+        function loadImgWithPromise() {
+            let url = document.getElementById("url").value;
+            let img = document.getElementById("photo");
+            loadImg(url)
+                .then(imageLink => {
+                    img.src = imageLink
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
+
+        async function loadImgWithAsync(url) {
+            return new Promise(function (resolve, reject) {
+                let xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 2) {
+                        if (xhr.status === 200) {
+                            xhr.responseType = "blob";
+                        } else {
+                            xhr.responseType = "text";
+                        }
+                    }
+                };
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var blob = new Blob([xhr.response], { type: "application/octetstream" });
+                        //Check the Browser type and download the File.
+                        var isIE = false || !!document.documentMode;
+                        if (isIE) {
+                            window.navigator.msSaveBlob(blob, fileName);
+                        } else {
+                            var imageUrl = window.URL || window.webkitURL;
+                            var imageLink = imageUrl.createObjectURL(blob);
+                            resolve(imageLink)
+                        }
+                    }
+                    else {
+                        reject(xhr.statusText)
+                    }
+                };
+                xhr.open("GET", url, true)
+                xhr.send()
+            })
+        }
+
+        async function loadImgWithAsyncCall() {
+            try {
+                let url = document.getElementById("url").value;
+                let img = document.getElementById("photo");
+                let imageLink = await loadImgWithAsync(url)
+                img.src = imageLink
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+    </script>
+</body>
+
+</html>

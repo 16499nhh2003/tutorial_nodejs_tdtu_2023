@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div>
+        <input type="text" placeholder="Enter Name" name="username">
+        <input type="text" placeholder="Enter age" name="age">
+        <button onclick="storeLocalStorage()" class="btn btn-primary">Store LocalStorage</button>
+        <button onclick="storeSessionStorage()" class="btn btn-danger">storeSessionStorage</button>
+    </div>
+
+    <div>
+        <table class="table" id="data-table">
+            <thead>
+                <th>STT</th>
+                <th>Name</th>
+                <th>Age</th>
+            </thead>
+            <tbody>
+
+            </tbody>
+            <tfoot>
+                <th>STT</th>
+                <th>Name</th>
+                <th>Age</th>
+            </tfoot>
+        </table>
+    </div>
+
+    <div>
+        <table class="table" id="data-table-session">
+            <thead>
+                <th>STT</th>
+                <th>Name</th>
+                <th>Age</th>
+            </thead>
+            <tbody>
+
+            </tbody>
+            <tfoot>
+                <th>STT</th>
+                <th>Name</th>
+                <th>Age</th>
+            </tfoot>
+        </table>
+
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <script>
+
+        if (typeof (Storage) === "undefined") {
+            alert("Browser does not support storage");
+        } else {
+            const tableBody = document.querySelector("#data-table tbody");
+            const tableBodySession = document.querySelector("#data-table-session tbody");
+            var nameInput = document.querySelector('input[name="username"]');
+            var age = document.querySelector('input[name="age"]');
+
+            function storeLocalStorage() {
+                try {
+                    // Retrieve existing data from local storage or create an empty array
+                    let data = JSON.parse(localStorage.getItem("data")) || [];
+
+                    // Create an object 
+                    let obj = {
+                        name: nameInput.value,
+                        age: age.value
+                    };
+                    // console.log(obj);
+                    // Push the object
+                    data.push(obj);
+
+                    // Store the updated data
+                    localStorage.setItem("data", JSON.stringify(data));
+
+                    // Clear input values
+                    nameInput.value = "";
+                    age.value = "";
+
+                    // Refresh the displayed data
+                    getDataLocal();
+                } catch (error) {
+                    // console.log(error);
+                }
+            }
+
+            function storeSessionStorage() {
+                try {
+                    // Retrieve existing data from session storage or create an empty array
+                    let data = JSON.parse(sessionStorage.getItem("data")) || [];
+
+                    // Create an object 
+                    let obj = {
+                        name: nameInput.value,
+                        age: age.value
+                    };
+
+                    // Push the object
+                    data.push(obj);
+
+                    // Store the updated data
+                    sessionStorage.setItem("data", JSON.stringify(data));
+
+                    // Clear input values
+                    nameInput.value = "";
+                    age.value = "";
+
+                    // Refresh the displayed data
+                    getDataSession();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            function getDataLocal() {
+                let data = JSON.parse(localStorage.getItem("data")) || [];
+                let trs = '';
+                data.forEach((element, index) => {
+                    let tr = `<tr>
+                                    <td>${index + 1}</td>
+                                    <td>${element.name}</td>
+                                    <td>${element.age}</td>
+                                </tr>`;
+                    trs += tr;
+                });
+                tableBody.innerHTML = trs;
+            }
+
+            function getDataSession() {
+                let data = JSON.parse(sessionStorage.getItem("data")) || [];
+                // console.log(data);
+                let trs = '';
+                data.forEach((element, index) => {
+                    let tr = `<tr>
+                                    <td>${index + 1}</td>
+                                    <td>${element.name}</td>
+                                    <td>${element.age}</td>
+                                </tr>`;
+                    trs += tr;
+                });
+                tableBodySession.innerHTML = trs;
+            }
+            // Initialize the app by calling getDataLocal
+            getDataLocal();
+
+            // Initialize the app by calling getDataSession
+            getDataSession();
+
+        }
+    </script>
+</body>
+
+</html>

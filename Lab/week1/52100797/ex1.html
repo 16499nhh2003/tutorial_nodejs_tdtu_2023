@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <p>Bài tập tải ảnh động bằng Ajax</p>
+    <input type="text" id="url">
+    <input value="Tải ảnh" type="button" class="btn btn-danger" onclick="loadImg()">
+
+    <div id="image">
+        <img src="" id="photo">
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        function loadImg() {
+            let img = document.getElementById("photo")
+            let url = document.getElementById("url").value
+            $.ajax({
+                url: url,
+                cache: false,
+                xhr: function () {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 2) {
+                            if (xhr.status == 200) {
+                                xhr.responseType = "blob";
+                            } else {
+                                xhr.responseType = "text";
+                            }
+                        }
+                    }
+                    // console.log(xhr);
+                    return xhr;
+                },
+                success: function (data) {
+                    var blob = new Blob([data], { type: "application/octetstream" });
+                    //Check the Browser type and download the File.
+                    var isIE = false || !!document.documentMode;
+                    if (isIE) {
+                        window.navigator.msSaveBlob(blob, fileName);
+                    } else {
+                        var url = window.URL || window.webkitURL;
+                        link = url.createObjectURL(blob);
+                        
+                        // let img = $("<img>")
+                        // img.attr("src",link)
+                        img.src = link
+                        // img.attr("src",link)
+
+                        // console.log(img);
+                        // let div = document.getElementById("image")
+                        // console.log(div);
+                        // div.append(img)                    
+                    }
+
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
